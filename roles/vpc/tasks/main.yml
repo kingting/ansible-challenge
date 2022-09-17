@@ -157,23 +157,6 @@
     wait: true
     exact_count: "{{ public_instance_count }}"
     tags:
-      Name: Webserver
+      Env: dev 
+      Name: webserver 
   register: ec2
-#- name: Create ELB in public subnet
-#
-#  ec2_elb_lb:
-#    aws_access_key: "{{ access_key }}"
-#    aws_secret_key: "{{ secret_key }}"
-##    state: present
-#    name: elb
-#    security_group_ids: "{{ sg.group_id }}"
-#    region: "{{ aws_region }}"
-#    subnets: "{{ public_subnet.subnet.id }}"
-#    purge_subnets: yes
-#    listeners:
-#    - protocol: http
-#      load_balancer_port: 80
-#      instance_port: 80
-#  register: elb
-#  tags:
-#    - elb
