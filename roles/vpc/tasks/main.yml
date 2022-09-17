@@ -1,0 +1,250 @@
+---
+- name: includes aws access secret
+  include_vars: secret.yml
+
+- name: Create AWS VPC
+  ec2_vpc_net:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    region: "{{ aws_region }}"
+    state: present
+    tags:
+      Name: Test VPC 
+  register: vpc
+  tags:
+    - vpc
+
+- name: Create Public Subnet in VPC
+  ec2_vpc_subnet:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    vpc_id: "{{ vpc.vpc.id }}"
+    cidr: "{{ vpc_public_subnet_cidr }}"
+    region: "{{ aws_region }}"
+    az: "{{ aws_region }}a"
+    state:  present
+    tags:
+      Name: Public Subnet
+  register: public_subnet
+  tags:
+    - vpc
+
+- name: Create Private Subnet in VPC
+  ec2_vpc_subnet:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    vpc_id: "{{ vpc.vpc.id }}"
+    cidr: "{{ vpc_private_subnet_cidr }}"
+    region: "{{ aws_region }}"
+    az: "{{ aws_region }}a"
+    state:  present
+    tags:
+      Name: Private Subnet
+  register: private_subnet
+  tags:
+    - vpc
+
+- name: Create Internet Gateway
+  ec2_vpc_igw:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    state: present
+  register: igw
+  tags:
+    - vpc
+
+- name: Create NAT Gateway
+  ec2_vpc_nat_gateway:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    if_exist_do_not_create: yes
+    subnet_id: "{{ public_subnet.subnet.id }}"
+    region: "{{ aws_region }}"
+    state: present
+    wait: yes
+  register: nat_gateway
+  tags:
+    - vpc
+
+- name: Create Route Table for Public Subnet
+  ec2_vpc_route_table:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw.gateway_id }}"
+    subnets:
+      - "{{ public_subnet.subnet.id }}"
+    tags:
+      Name: Public Subnet Route Table
+  tags:
+    - vpc
+
+- name: Create Route Table for Private Subnet
+  ec2_vpc_route_table:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ nat_gateway.nat_gateway_id }}"
+    subnets:
+      - "{{ private_subnet.subnet.id }}"
+    tags:
+      Name: Private Subnet Route Table
+  tags:
+    - vpc
+
+- name: Create EC2 Security Group
+  ec2_group:
+    aws_secret_key: "{{ secret_key }}"
+    aws_access_key: "{{ access_key }}"
+    name: sg
+    description: security group
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: "{{ vpc_cidr_block }}"
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: icmp
+        from_port: 8
+        to_port:  -1
+        cidr_ip: "{{ vpc_cidr_block }}"
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: sg
+  tags:
+    - security_group
+
+- name: Create EC2 Key Pair
+  ec2_key:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    name: ec2_key
+    key_material: "{{ key }}"
+    region: "{{ aws_region }}"
+    state: present
+  tags:
+    - ec2
+
+#- name: Create EC2 Instance in private subnet
+#  amazon.aws.ec2:
+#    key_name: ec2_key
+#    instance_type: t2.micro
+#    image: ami-123456
+#    wait: yes
+#    group: sg
+#    count: 1
+#    vpc_subnet_id: "{{ private_subnet.subnet.id }}"
+#  debug:
+#    msg: "This line Testing"
+#
+- name: Provision a set of instances
+  ec2:
+    key_name: ansible
+    group: sg
+    instance_type: t2.micro
+    image: ami-0808460885ff81045
+    region: ap-southeast-2
+    wait: true
+    exact_count: 1
+    count_tag:
+      Name: AnsibleNginxWebservers
+    instance_tags:
+       Name: Ansible
+    register: ec2
+    ignore_errors: true
+#
+#- name: Provision a set of instances
+#  ec2:
+#    aws_access_key: "{{ access_key }}"
+#    aws_secret_key: "{{ secret_key }}"
+#    key_name: ansible 
+#    group: sg
+#    instance_type: "{{ instance_type }}"
+#    image: "{{ ami_id }}"
+#    region: "{{ aws_region }}"
+#    wait: true
+#    exact_count: 2
+#    count_tag:
+#      Name: Webserver
+#    instance_tags:
+#      Name: Private Instance
+#  register: ec2_private_instance
+#  ignore_errors: true
+#  tags:
+#    - ec2
+#
+#- name: Create EC2 Instance in private subnet
+#  ec2:
+#    aws_access_key: "{{ access_key }}"
+##    aws_secret_key: "{{ secret_key }}"
+#    key_name: ec2_key
+#    instance_type: "{{ instance_type }}"
+#    image: "{{ ami_id }}"
+#    wait: yes
+#    group: sg
+#    vpc_subnet_id: "{{ private_subnet.subnet.id }}"
+#    region: "{{ aws_region }}"
+#    count_tag:
+#      Name: Private Instance
+#    exact_count: "{{ private_instance_count }}"
+#    instance_tags:
+#      Name: Private Instance
+#  tags:
+#    - ec2
+#
+#- name: Create EC2 Instance in public subnet
+#  ec2:
+#    aws_access_key: "{{ access_key }}"
+#    aws_secret_key: "{{ secret_key }}"
+#    key_name: ec2_key
+#    instance_type: "{{ instance_type }}"
+#    image: "{{ ami_id }}"
+#    wait: yes
+#    group: sg
+#    vpc_subnet_id: "{{ public_subnet.subnet.id }}"
+#    region: "{{ aws_region }}"
+#    count_tag:
+#      Name: Public Instance
+#    exact_count: "{{ public_instance_count }}"
+#    instance_tags:
+#      Name: Public Instance
+#  tags:
+#    - ec2
+#
+#- name: Create ELB in public subnet
+#  ec2_elb_lb:
+#    aws_access_key: "{{ access_key }}"
+#    aws_secret_key: "{{ secret_key }}"
+##    state: present
+#    name: elb
+#    security_group_ids: "{{ sg.group_id }}"
+#    region: "{{ aws_region }}"
+#    subnets: "{{ public_subnet.subnet.id }}"
+#    purge_subnets: yes
+#    listeners:
+#    - protocol: http
+#      load_balancer_port: 80
+#      instance_port: 80
+#  register: elb
+#  tags:
+#    - elb
