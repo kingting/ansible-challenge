@@ -102,12 +102,12 @@
   tags:
     - vpc
 
-- name: Create EC2 Security Group
+- name: Create EC2 App Security Group
   ec2_group:
     aws_secret_key: "{{ secret_key }}"
     aws_access_key: "{{ access_key }}"
-    name: sg
-    description: security group
+    name: app_sg
+    description: App security group
     vpc_id: "{{ vpc.vpc.id }}"
     region: "{{ aws_region }}"
     rules:
@@ -130,7 +130,39 @@
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
-  register: sg
+  register: app_sg
+  tags:
+    - security_group
+
+- name: Create EC2 ELB Security Group
+  ec2_group:
+    aws_secret_key: "{{ secret_key }}"
+    aws_access_key: "{{ access_key }}"
+    name: elb_sg
+    description: ELB security group
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: icmp
+        from_port: 8
+        to_port:  -1
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: elb_sg
   tags:
     - security_group
 
@@ -150,13 +182,15 @@
     aws_access_key: "{{ access_key }}"
     vpc_subnet_id: "{{ public_subnet.subnet.id }}"
     key_name: ansible
-    security_group: sg
+    security_group: elb_sg
     instance_type: "{{ instance_type }}"
     image_id: "{{ ami_id }}"
     region: "{{ aws_region }}"
     wait: true
     exact_count: "{{ public_instance_count }}"
+    network:
+      assign_public_ip: yes
     tags:
       Env: dev 
       Name: webserver 
-  register: ec2
+  register: ec2_public_instance
