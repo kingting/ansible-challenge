@@ -12,3 +12,6 @@ ansible-inventory -i inventory/aws_ec2.yml --list
 
 #
 ansible-playbook -i inventory/aws_ec2.yml --ask-vault-pass site.yml
+
+# Test login for instances
+ansible all -m ping

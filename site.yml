@@ -6,3 +6,9 @@
   roles:
     - vpc 
 #    - web
+  tasks:
+    - debug:
+        msg: "Browse to http://{{ ansible_host }}"
+
+    - pause:
+        prompt: "Check for availability before terminate"
