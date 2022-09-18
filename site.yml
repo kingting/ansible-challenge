@@ -14,6 +14,9 @@
 - hosts: aws_ec2
   roles:
     - httpd
+    - chrony
+    - ssh_hardening
+    - timezone
 
 - hosts: tag_Name_vm1
   tasks:
