@@ -11,11 +11,9 @@ vpc_public_subnet_cidr: "10.0.0.0/24"
 # Subnets
 vpc_private_subnet_cidr: "10.0.1.0/24"
 
-#Key Pair Content
-key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsvk9a8rmEuvcaOTDLFNMoaxzzWVz8ArgdR04ufaYHUYnYQfJNzKayFipidf/zZAnGdP2KCuWF19DwNkHguABL95HCcjIWrSSkWPL+hwWvI6sAJm2o+OrIW0w1MG1eWpQk7zfb6pJLQMJT9f12XdV60Z4MHqNCXGc++xVdZpIie/ZTfBuHDw5PKLWXn54J6eb58RZxUzj2PuVlRC9o4afS30XDqoLiiidc5cz3Byxp7+Ilb00TEl0ClHsabaO4cgCsq72O6YO0M2VCqxdy73v2t7LlnHKwOgLnMp2WZ4UAwVgjkYLVwn4AZ3O0CxrsvD1f70UE2MOWnulyTO3bJgup user@example.com'
+#Public Key for ssh login to instance
+key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNepubQgO2VoJvFySFCzBu65GMbCy7oHxSo4cY1WH2IdXZJj2kk9hTvx7q5lg5f5NqJQb21lNLKmSbpKQvzH5A4bXkGz4PUpVHf7UkGqcMCGYaJyMj3IlHnZed5RwSUe8mPvaGoZkdK3AkND/Rj2Kc/52k23vs2B/QmZ4sDei8+KbTtoVJLEWNxniIxY3sFx4CkaXHhDhHRpIxG3+tZfc1xoonfImmPbPsk15+32RFS0hEtpYsmGwIlDIEdgsYTV7SNupLmU9KN27lJU6C0Vg1+OgRYptHwcIeK0wxiCx3Y2KWZUMEvnKg2F5LHBKO9sIq0pjHuspKdDghRwv1G67B ansible'
 
 #EC2 Instance Info
 instance_type: 't2.micro'
-ami_id:        'ami-0808460885ff81045'
-private_instance_count: 1
-public_instance_count: 1
+ami_id: 'ami-0808460885ff81045'

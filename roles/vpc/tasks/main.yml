@@ -170,7 +170,7 @@
   ec2_key:
     aws_access_key: "{{ access_key }}"
     aws_secret_key: "{{ secret_key }}"
-    name: ec2_key
+    name: ansible 
     key_material: "{{ key }}"
     region: "{{ aws_region }}"
     state: present
