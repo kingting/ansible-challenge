@@ -5,10 +5,23 @@
 
   roles:
     - vpc 
-#    - web
+
+- hosts: aws_ec2
+  gather_facts: false
+  roles:
+    - httpd
+
+- hosts: tag_Name_vm1
+  gather_facts: false
   tasks:
     - debug:
         msg: "Browse to http://{{ ansible_host }}"
 
-    - pause:
-        prompt: "Check for availability before terminate"
+- hosts: tag_Name_vm2
+  gather_facts: false
+  tasks:
+    - debug:
+        msg: "Browse to http://{{ ansible_host }}"
+
+#    - pause:
+#        prompt: "Check for availability before terminate"
