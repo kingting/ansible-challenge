@@ -189,6 +189,7 @@
     region: "{{ aws_region }}"
     wait: true
     exact_count: 1
+    state: present
     network:
      assign_public_ip: yes
     tags:
@@ -206,39 +207,10 @@
     image_id: "{{ ami_id }}"
     region: "{{ aws_region }}"
     wait: true
+    state: present
     exact_count: 1
     network:
      assign_public_ip: yes
     tags:
       Name: vm2 
   register: ec2_vm2
-- name: Provision Virtual Machine 1 in public subnet
-  ec2_instance:
-    aws_secret_key: "{{ secret_key }}"
-    aws_access_key: "{{ access_key }}"
-    vpc_subnet_id: "{{ public_subnet.subnet.id }}"
-    key_name: ansible
-    security_group: elb_sg
-    instance_type: "{{ instance_type }}"
-    image_id: "{{ ami_id }}"
-    region: "{{ aws_region }}"
-    wait: true
-    exact_count: 1
-    network:
-     assign_public_ip: yes
-    tags:
-      Name: vm1 
-  register: ec2_vm1
-
-#- name: "Add new instances to host group" 
-#  add_host:
-#    hostname: "{{ item.public_ip }}"
-#    groupname: webserver
-#  loop: "{{ ec2_public.instances }}"
-#
-#- name: "Wait for SSH in Instance"
-#  wait_for:
-#    host: "{{ item.public_dns_name }}"
-#    port: 22
-#    state: started
-#  loop: "{{ ec2_public.instances }}"

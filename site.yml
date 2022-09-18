@@ -2,26 +2,44 @@
 - hosts: localhost
   connection: local
   gather_facts: false
+  tasks:
+    - name: Ensure aws boto3 installed
+      pip:
+        name: boto3
+        state: present
 
   roles:
     - vpc 
 
 - hosts: aws_ec2
-  gather_facts: false
   roles:
     - httpd
 
 - hosts: tag_Name_vm1
-  gather_facts: false
   tasks:
+    - name: Copy adjustable-fireworks.html
+      copy:
+        src: group_vars/files/adjustable-fireworks.html
+        dest: /var/www/html/adjustable-fireworks.html
+    - name: Restart httpd service
+      service:
+        name: httpd
+        state: restarted
     - debug:
-        msg: "Browse to http://{{ ansible_host }}"
+        msg: "Browse to http://{{ ansible_host }}/adjustable-fireworks.html"
 
 - hosts: tag_Name_vm2
-  gather_facts: false
   tasks:
+    - name: Copy clock.html
+      copy:
+        src: group_vars/files/clock.html
+        dest: /var/www/html/clock.html
+    - name: Restart httpd service
+      service:
+        name: httpd
+        state: restarted
     - debug:
-        msg: "Browse to http://{{ ansible_host }}"
+        msg: "Browse to http://{{ ansible_host }}/clock.html"
 
 #    - pause:
 #        prompt: "Check for availability before terminate"
