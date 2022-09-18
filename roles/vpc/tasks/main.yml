@@ -214,3 +214,13 @@
     tags:
       Name: vm2 
   register: ec2_vm2
+
+- name: Wait to completely provision instances
+  pause:
+    minutes: 1
+- name: Refresh inventory
+  meta: refresh_inventory
+
+
+ 
+
