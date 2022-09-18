@@ -6,5 +6,8 @@ keyed_groups:
   - prefix: tag
     key: tags
 compose:
-  ansible_host: public_dns_name
+  ansible_host: public_ip_name
 filters:
+  "instance-state-name": running
+hostnames:
+  - dns-name
