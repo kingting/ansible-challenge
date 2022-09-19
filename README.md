@@ -1,4 +1,5 @@
-# Tested only with Python >3.8 on Ubuntu 1804 as ansible controller 
+# Prerequisite: Ansible controller machine with the appropriate setup
+- Tested only with Python >3.8 on Ubuntu 1804
 
 ## Setup python virtual environment for a more stable play 
 ```
@@ -23,12 +24,9 @@ pip install boto3
 
 ## Copy ssh private key (ansible.pem) to the controller machine, the key is provided separately
 cp /<download location>/ansible.pem ~/.ssh/. 
+- Point to the key or make the key available to ssh agent 
 
-### Point to the key or make the key available to ssh agent 
-
-## Execute the playbook
+# Execute the playbook
 ansible-playbook -i inventory/aws_ec2.yml site.yml
-
 - Whem prompted for vault password, enter the password given separately
-
-### Browse to the websites with the given URLs
+- Browse to the websites with the given URLs
