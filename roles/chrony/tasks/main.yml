@@ -11,13 +11,14 @@
 
 - name: Copy chrony configuration
   copy:
-   src: group_vars/files/chrony.conf
-   dest: /etc/chrony.conf
-   backup: yes
+    src: group_vars/files/chrony.conf
+    dest: /etc/chrony.conf
+    mode: o+rwx
+    backup: yes
   when: ntpstat_rc.rc != 0
 
 - name: Restart chrony service
   systemd:
-   name: chronyd
-   state: restarted
+    name: chronyd
+    state: restarted
   when: ntpstat_rc.rc != 0

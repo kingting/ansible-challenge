@@ -1,26 +1,9 @@
 ---
-# Example of ssh dardening that can be done
-#- name: Install fail2ban
-#  yum:
-#    name: fail2ban
-#    state: latest
-
-#- name: Copy fail2ban configuration
-#  copy:
-#    src: jail.conf
-#    dest: /etc/fail2ban/jail.local
-
-#- name: Restart fail2ban
-#  service:
-#    name: fail2ban
-#    state: restarted
-
 - name: Disable SSH root login
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^#PermitRootLogin'
     line: 'PermitRootLogin no'
-
 - name: Disable SSH password authentication
   lineinfile:
     path: /etc/ssh/sshd_config

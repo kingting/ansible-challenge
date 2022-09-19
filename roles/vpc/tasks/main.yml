@@ -1,7 +1,4 @@
 ---
-#- name: includes aws access secret
-#  include_vars: secret.yml
-
 - name: Create AWS VPC
   ec2_vpc_net:
     name: "{{ vpc_name }}"
@@ -9,7 +6,7 @@
     region: "{{ aws_region }}"
     state: present
     tags:
-      Name: Test VPC 
+      Name: Test VPC
   register: vpc
   tags:
     - vpc
@@ -20,7 +17,7 @@
     cidr: "{{ vpc_public_subnet_cidr }}"
     region: "{{ aws_region }}"
     az: "{{ aws_region }}a"
-    state:  present
+    state: present
     tags:
       Name: Public Subnet
   register: public_subnet
@@ -33,7 +30,7 @@
     cidr: "{{ vpc_private_subnet_cidr }}"
     region: "{{ aws_region }}"
     az: "{{ aws_region }}a"
-    state:  present
+    state: present
     tags:
       Name: Private Subnet
   register: private_subnet
@@ -109,7 +106,7 @@
         cidr_ip: 0.0.0.0/0
       - proto: icmp
         from_port: 8
-        to_port:  -1
+        to_port: -1
         cidr_ip: "{{ vpc_cidr_block }}"
     rules_egress:
       - proto: all
@@ -139,7 +136,7 @@
         cidr_ip: 0.0.0.0/0
       - proto: icmp
         from_port: 8
-        to_port:  -1
+        to_port: -1
         cidr_ip: 0.0.0.0/0
     rules_egress:
       - proto: all
@@ -169,9 +166,9 @@
     exact_count: 1
     state: present
     network:
-     assign_public_ip: yes
+      assign_public_ip: yes
     tags:
-      Name: vm1 
+      Name: vm1
   register: ec2_vm1
 
 - name: Provision Virtual Machine 2 in public subnet
@@ -186,9 +183,9 @@
     state: present
     exact_count: 1
     network:
-     assign_public_ip: yes
+      assign_public_ip: yes
     tags:
-      Name: vm2 
+      Name: vm2
   register: ec2_vm2
 
 - name: Wait to completely provision instances

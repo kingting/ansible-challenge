@@ -29,6 +29,7 @@
       copy:
         src: group_vars/files/adjustable-fireworks.html
         dest: /var/www/html/adjustable-fireworks.html
+        mode: u+rw
     - name: Restart httpd service
       service:
         name: httpd
@@ -42,6 +43,7 @@
       copy:
         src: group_vars/files/clock.html
         dest: /var/www/html/clock.html
+        mode: u+rw
     - name: Restart httpd service
       service:
         name: httpd
