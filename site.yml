@@ -1,12 +1,17 @@
 ---
 - hosts: localhost
   connection: local
+  vars_files:
+    group_vars/ansible_user_credentials.yml
+  environment:
+    AWS_ACCESS_KEY: "{{ access_key }}"
+    AWS_SECRET_KEY: "{{ secret_key }}"
   gather_facts: false
-  tasks:
-    - name: Ensure aws boto3 installed
-      pip:
-        name: boto3
-        state: present
+#  tasks:
+#    - name: Ensure aws boto3 installed
+#      pip:
+#        name: boto3
+#        state: present
 
   roles:
     - vpc 
