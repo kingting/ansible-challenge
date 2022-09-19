@@ -24,11 +24,4 @@ cp /<download location>/ansible.pem ~/.ssh/.
 
 ## Execute the playbook, enter the vault password given separately
 ansible-playbook -i inventory/aws_ec2.yml site.yml
-
-## Test access for instances
-ansible all -m ping
-
-## Get the inventory using dynamic inventory
-ansible-inventory -i inventory/aws_ec2.yml --list
-
-## Browse to the websites with the given URLs
+### Browse to the websites with the given URLs
