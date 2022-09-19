@@ -23,7 +23,7 @@ pip install boto3
 - Whem prompted for vault password, enter the password given separately
 
 ## Copy ssh private key (ansible.pem) to the controller machine, the key is provided separately
-cp /<download location>/ansible.pem ~/.ssh/. 
+cp /\<download location\>/ansible.pem ~/.ssh/. 
 - Point to the key or make the key available to ssh agent 
 
 # Execute the playbook
