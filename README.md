@@ -19,7 +19,7 @@ pip install boto3
 ## Install aws access key and secret in the environment for accessing the aws 
 . ./ansible_user_credential.sh
 
-### Whem prompted for vault password, enter the password given separately
+- Whem prompted for vault password, enter the password given separately
 
 ## Copy ssh private key (ansible.pem) to the controller machine, the key is provided separately
 cp /<download location>/ansible.pem ~/.ssh/. 
@@ -29,6 +29,6 @@ cp /<download location>/ansible.pem ~/.ssh/.
 ## Execute the playbook
 ansible-playbook -i inventory/aws_ec2.yml site.yml
 
-### Whem prompted for vault password, enter the password given separately
+- Whem prompted for vault password, enter the password given separately
 
 ### Browse to the websites with the given URLs
