@@ -1,12 +1,14 @@
 # Tested only with Python >3.8 on Ubuntu 1804 as ansible controller 
 
 ## Setup python virtual environment for a more stable play 
+```
 sudo apt-get install python3-venv
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install ansible
 pip install ansible-lint
+```
 
 ## Install all the required collection
 ansible-galaxy collection install -r collections/requirements.yml 
