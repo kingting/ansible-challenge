@@ -1,5 +1,7 @@
 # Prerequisite: Ansible controller machine with the appropriate setup
 - Tested only with Python >3.8 on Ubuntu 1804
+- AWS key is stored in an ansible vault protected with a password provided separately
+- Access to the instance is thru ssh key provided separately
 
 ## Setup python virtual environment for a more stable play 
 ```
